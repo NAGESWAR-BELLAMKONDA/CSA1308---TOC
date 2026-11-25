@@ -13,12 +13,12 @@ const groups=[
 {name:'Fear / consequence language',words:['frozen','before it is deleted','danger','warning','panic','disaster'],weight:10}
 ];
 function analyze(t){
- const lower=t.toLowerCase(),tokens=t.trim().split(/\\s+/).filter(Boolean),sentences=(t.match(/[.!?]+/g)||[]).length||1,matched=[];let raw=0;
+ const lower=t.toLowerCase(),tokens=t.trim().split(/\s+/).filter(Boolean),sentences=(t.match(/[.!?]+/g)||[]).length||1,matched=[];let raw=0;
  groups.forEach(g=>{const hits=g.words.filter(w=>lower.includes(w));if(hits.length){raw+=g.weight;matched.push({name:g.name,hits,weight:g.weight})}});
- const caps=(t.match(/\\b[A-Z]{3,}\\b/g)||[]).length,ex=(t.match(/!/g)||[]).length;raw+=Math.min(12,caps*3)+Math.min(8,ex*2);
+ const caps=(t.match(/\b[A-Z]{3,}\b/g)||[]).length,ex=(t.match(/!/g)||[]).length;raw+=Math.min(12,caps*3)+Math.min(8,ex*2);
  const score=Math.max(0,Math.min(100,raw+25)),band=score>=60?'Elevated structural signals':score>=35?'Moderate structural signals':'Lower structural signals';
  const parts=t.match(/[^.!?]+[.!?]?/g)||[];
- const tree=parts.filter(s=>s.trim()).map((s,i)=>{const w=s.trim().split(/\\s+/);return {sentence:s.trim(),np:w.slice(0,Math.min(4,w.length)).join(' '),vp:w.slice(Math.min(4,w.length)).join(' ')}});
+ const tree=parts.filter(s=>s.trim()).map((s,i)=>{const w=s.trim().split(/\s+/);return {sentence:s.trim(),np:w.slice(0,Math.min(4,w.length)).join(' '),vp:w.slice(Math.min(4,w.length)).join(' ')}});
  return {score,band,sentences,tokens:tokens.length,matched,caps,ex,tree};
 }
 function Tree({label,children}){return <div className="tree-node"><span className="tree-label">{label}</span>{children&&<div className="tree-children">{children}</div>}</div>}
